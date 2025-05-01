@@ -1,60 +1,81 @@
 cmake_minimum_required(VERSION 3.22)
+project(AdamWaveshaper VERSION 0.1.0)
 
-# Version is needed by JUCE.
-project(AudioPlugin VERSION 0.1.0)
+# === Globals ===
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/WaveshaperPlugin")
+set(PROJECT_WARNINGS_CXX "-Wall" "-Wextra" "-Wpedantic" "-Wconversion" "-Wsign-conversion" "-Werror")
 
-# Adding a directory with the library/application name as a subfolder of the
-# include folder is a good practice. It helps avoid name clashes later on.
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/MyPlugin")
+# === Required system packages (needed for juce_gui_extra) ===
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTK REQUIRED gtk+-3.0)
+pkg_check_modules(WEBKIT REQUIRED webkit2gtk-4.1)
+add_definitions(${GTK_CFLAGS_OTHER})
 
-# Adds a plugin target (that's basically what the Projucer does).
+# === JUCE plugin target ===
 juce_add_plugin(
   ${PROJECT_NAME}
-  COMPANY_NAME
-  "YourBusiness"
-  IS_SYNTH
-  FALSE # may change this
-  NEEDS_MIDI_INPUT
-  FALSE # may change this
-  NEEDS_MIDI_OUTPUT
-  FALSE # may change this
-  PLUGIN_MANUFACTURER_CODE
-  Adbm
-  PLUGIN_CODE
-  Demo
-  FORMATS
-  Standalone
-  VST3
-  PRODUCT_NAME
-  "MyPlugin"
+  COMPANY_NAME "YourBusiness"
+  IS_SYNTH FALSE
+  NEEDS_MIDI_INPUT FALSE
+  NEEDS_MIDI_OUTPUT FALSE
+  PLUGIN_MANUFACTURER_CODE Adbm
+  PLUGIN_CODE Demo
+  FORMATS Standalone VST3
+  PRODUCT_NAME "WaveshaperPlugin"
 )
 
-# Make sure editor-references in the Processor is included when building full plugin
-target_compile_definitions(AudioPlugin PRIVATE BUILDING_PLUGIN)
+# === DSP static library ===
+add_library(waveshaper_dsp STATIC
+    source/dsp/Waveshaper.cpp
+)
 
-# Sets the source files of the plugin project.
-set(SOURCE_FILES source/PluginEditor.cpp source/PluginProcessor.cpp source/EditorBridge.cpp)
-# Optional; includes header files in the project file tree in Visual Studio
-set(HEADER_FILES ${INCLUDE_DIR}/PluginEditor.h ${INCLUDE_DIR}/PluginProcessor.h)
+target_include_directories(waveshaper_dsp
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(waveshaper_dsp
+    PUBLIC juce::juce_core
+)
+
+# === Plugin-specific compile flags and definitions ===
+target_compile_definitions(${PROJECT_NAME}
+  PRIVATE BUILDING_PLUGIN
+  PUBLIC
+    JUCE_WEB_BROWSER=0 
+    JUCE_USE_CURL=0 
+    JUCE_VST3_CAN_REPLACE_VST2=0
+)
+
+# === Plugin sources and headers ===
+set(SOURCE_FILES
+    source/PluginProcessor.cpp
+    source/PluginEditor.cpp
+    source/EditorBridge.cpp
+)
+
+set(HEADER_FILES
+    ${INCLUDE_DIR}/PluginEditor.h
+    ${INCLUDE_DIR}/PluginProcessor.h
+)
+
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCE_FILES} ${HEADER_FILES})
 
-# Sets the include directories of the plugin project.
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-# Links to all necessary dependencies. The present ones are recommended by JUCE.
-# If you use one of the additional modules, like the DSP module, you need to specify it here.
-target_link_libraries_system(${PROJECT_NAME} PUBLIC juce::juce_audio_utils)
-target_link_libraries(
-  ${PROJECT_NAME} PUBLIC juce::juce_recommended_config_flags juce::juce_recommended_lto_flags
-                         juce::juce_recommended_warning_flags
-)
-
-# These definitions are recommended by JUCE.
-target_compile_definitions(${PROJECT_NAME} PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0)
-
-# Enables strict C++ warnings and treats warnings as errors.
-# This needs to be set up only for your projects, not 3rd party
+# === Warnings (your code only) ===
 set_source_files_properties(${SOURCE_FILES} PROPERTIES COMPILE_OPTIONS "${PROJECT_WARNINGS_CXX}")
 
-# In Visual Studio this command provides a nice grouping of source files in "filters".
+# === Plugin includes and linking ===
+target_include_directories(${PROJECT_NAME}
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        waveshaper_dsp
+        juce::juce_audio_utils
+        juce::juce_recommended_config_flags
+        juce::juce_recommended_lto_flags
+        juce::juce_recommended_warning_flags
+)
+
+# === Visual Studio project filters ===
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)

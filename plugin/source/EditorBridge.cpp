@@ -1,7 +1,7 @@
 #if BUILDING_PLUGIN
 
-#include "MyPlugin/PluginProcessor.h"
-#include "MyPlugin/PluginEditor.h"
+#include "WaveshaperPlugin/PluginProcessor.h"
+#include "WaveshaperPlugin/PluginEditor.h"
 
 juce::AudioProcessorEditor*
 audio_plugin::AudioPluginAudioProcessor::createEditor() {

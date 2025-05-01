@@ -8,6 +8,10 @@ public:
   AudioPluginAudioProcessor();
   ~AudioPluginAudioProcessor() override;
 
+  // Setup apvts (AudioProcessorValueTreeState)
+  juce::AudioProcessorValueTreeState apvts;
+  static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+
   void prepareToPlay(double sampleRate, int samplesPerBlock) override;
   void releaseResources() override;
 

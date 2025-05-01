@@ -27,8 +27,8 @@ test: configure
 	./build/test/AudioProcessorTest
 
 vst3: configure
-	cmake --build build --target AudioPlugin_VST3
+	cmake --build build --target AdamWaveshaper_VST3
 	./build/test/AudioProcessorTest
 
 all: configure
-	cmake --build build --target AudioPlugin AudioProcessorTest
+	cmake --build build --target AdamWaveshaper AudioProcessorTest
