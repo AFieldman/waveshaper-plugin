@@ -70,14 +70,12 @@ void AudioPluginAudioProcessorEditor::resized()
   // Compute heights proportionally
   int sliderHeight = static_cast<int>(totalHeight * 0.25f);
   int buttonHeight = static_cast<int>(totalHeight * 0.15f);
-  int labelHeight = static_cast<int>(totalHeight * 0.1f);
 
   // Layout
   driveSlider.setBounds(bounds.removeFromTop(sliderHeight));
   mixSlider.setBounds(bounds.removeFromTop(sliderHeight).reduced(0, 10));
 
   modeButton.setBounds(bounds.removeFromTop(buttonHeight).withSizeKeepingCentre(120, buttonHeight));
-  currentModeLabel.setBounds(bounds.removeFromTop(labelHeight));
 }
 
 void AudioPluginAudioProcessorEditor::updateModeButtonText()

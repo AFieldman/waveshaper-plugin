@@ -135,6 +135,7 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
                 : dsp::applyHardClip(driven);
             
             samples[i] = (1.0f - mix) * inSample + mix * shaped;
+        }
     }
 }
 
