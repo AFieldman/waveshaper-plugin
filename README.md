@@ -93,7 +93,7 @@ You can change any of these flags (e.g., enable MIDI or synth) to reconfigure pl
 
 ## Rename project
 
-bash```
+```bash
 chmod +x rename_project.sh
 ./rename_project.sh NewProductName NewProjectName [--dry-run]
 ```
