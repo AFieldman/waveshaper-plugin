@@ -43,7 +43,6 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   addAndMakeVisible(driveSlider); addAndMakeVisible(driveLabel);
   addAndMakeVisible(mixSlider); addAndMakeVisible(mixLabel);
   addAndMakeVisible(modeButton); addAndMakeVisible(modeLabel);
-  addAndMakeVisible(currentModeLabel);
   updateModeButtonText();
 }
 
@@ -85,8 +84,6 @@ void AudioPluginAudioProcessorEditor::updateModeButtonText()
 {
     int mode = static_cast<int>(processorRef.apvts.getRawParameterValue("mode")->load());
     modeButton.setButtonText(mode == 0 ? "Soft Clip" : "Hard Clip");
-    currentModeLabel.setText("Current: " + juce::String(mode == 0 ? "Soft Clip" : "Hard Clip"),
-                             juce::dontSendNotification);
 }
 
 void AudioPluginAudioProcessorEditor::buttonClicked(juce::Button* button)
@@ -95,11 +92,5 @@ void AudioPluginAudioProcessorEditor::buttonClicked(juce::Button* button)
         updateModeButtonText();
 }
 
-void AudioPluginAudioProcessorEditor::updateModeLabel()
-{
-    int mode = static_cast<int>(processorRef.apvts.getRawParameterValue("mode")->load());
-    currentModeLabel.setText("Current: " + juce::String(mode == 0 ? "Soft Clip" : "Hard Clip"),
-                             juce::dontSendNotification);
-}
 
 }  // namespace audio_plugin

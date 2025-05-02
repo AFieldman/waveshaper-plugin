@@ -24,7 +24,6 @@ private:
   juce::Label mixLabel;
   juce::Label driveLabel;
   juce::Label modeLabel;
-  juce::Label currentModeLabel;
 
   // === Attachments (APVTS binding) ===
   std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> driveAttachment;
