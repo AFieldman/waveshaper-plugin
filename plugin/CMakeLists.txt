@@ -5,11 +5,6 @@ project(AdamWaveshaper VERSION 0.1.0)
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/WaveshaperPlugin")
 set(PROJECT_WARNINGS_CXX "-Wall" "-Wextra" "-Wpedantic" "-Wconversion" "-Wsign-conversion" "-Werror")
 
-# === Required system packages (needed for juce_gui_extra) ===
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK REQUIRED gtk+-3.0)
-pkg_check_modules(WEBKIT REQUIRED webkit2gtk-4.1)
-add_definitions(${GTK_CFLAGS_OTHER})
 
 # === JUCE plugin target ===
 juce_add_plugin(
