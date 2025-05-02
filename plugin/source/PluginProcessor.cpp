@@ -1,17 +1,28 @@
 #include "WaveshaperPlugin/PluginProcessor.h"
 #include "WaveshaperPlugin/PluginEditor.h"
 #include "WaveshaperPlugin/dsp/Waveshaper.h"
+#include <fstream>
+
 
 namespace audio_plugin {
+
+static std::ofstream logFile("/tmp/waveshaper_debug.log", std::ios::app);
+
+void logDebug(float inSample, float driven, float outSample)
+{
+    logFile << "inSample=" << inSample << " driven=" << driven << " outSample=" << outSample << "\n";
+}
+
 AudioPluginAudioProcessor::AudioPluginAudioProcessor()
     : AudioProcessor(
           BusesProperties()
               .withInput("Input", juce::AudioChannelSet::stereo(), true)
               .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
-          apvts(*this, nullptr, "Parameters", createParameterLayout()) {
-}
+          apvts(*this, nullptr, "Parameters", createParameterLayout()) 
+{}
 
-AudioPluginAudioProcessor::~AudioPluginAudioProcessor() {}
+AudioPluginAudioProcessor::~AudioPluginAudioProcessor() 
+{}
 
 const juce::String AudioPluginAudioProcessor::getName() const {
   return JucePlugin_Name;
@@ -122,9 +133,8 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
             float shaped = (mode == 0)
                 ? dsp::applySoftClip(driven)
                 : dsp::applyHardClip(driven);
-
+            
             samples[i] = (1.0f - mix) * inSample + mix * shaped;
-        }
     }
 }
 
