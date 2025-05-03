@@ -4,7 +4,7 @@
 #include <fstream>
 
 
-namespace audio_plugin {
+namespace waveshaper_plugin {
 
 static std::ofstream logFile("/tmp/waveshaper_debug.log", std::ios::app);
 
@@ -169,7 +169,7 @@ void AudioPluginAudioProcessor::setStateInformation(const void* data, int sizeIn
         if (xmlState->hasTagName(apvts.state.getType()))
             apvts.replaceState(juce::ValueTree::fromXml(*xmlState));
 }
-}  // namespace audio_plugin
+}  // namespace waveshaper_plugin
 
 // This creates new instances of the plugin.
 // This function definition must be in the global namespace.

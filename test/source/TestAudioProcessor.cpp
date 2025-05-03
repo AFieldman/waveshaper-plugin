@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "WaveshaperPlugin/PluginProcessor.h"
 
-using namespace audio_plugin;
+using namespace waveshaper_plugin;
 
 TEST(AudioProcessorTest, CanConstructProcessor)
 {

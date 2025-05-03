@@ -2,7 +2,7 @@
 #include <cmath>
 #include "WaveshaperPlugin/dsp/Waveshaper.h"
 
-using namespace audio_plugin::dsp;
+using namespace waveshaper_plugin::dsp;
 
 TEST(WaveshaperTest, SoftClipWithinBounds)
 {

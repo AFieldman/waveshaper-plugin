@@ -1,15 +1,17 @@
 #!/bin/bash
 
-# Usage: ./rename_project.sh NewProductName NewProjectName [--dry-run]
+# Usage: ./rename_project.sh NewProductName NewProjectName new_namespace [--dry-run]
 
-OLD_PRODUCT_NAME=MyPlugin
-OLD_PROJECT_NAME=AudioPlugin
+OLD_PRODUCT_NAME=WaveshaperPlugin
+OLD_PROJECT_NAME=AdamWaveshaper
+OLD_NAMESPACE_NAME=waveshaper_plugin
 
 NEW_PRODUCT_NAME=$1
 NEW_PROJECT_NAME=$2
+NEW_NAMESPACE_NAME=$3
 DRY_RUN=false
 
-if [ "$3" == "--dry-run" ]; then
+if [ "$4" == "--dry-run" ]; then
   DRY_RUN=true
 fi
 
@@ -58,6 +60,22 @@ replace_in_file() {
     ! $DRY_RUN && sed -i'' -E "s/\b${OLD_PROJECT_NAME}(_VST3)?\b/${NEW_PROJECT_NAME}\1/g" "$file"
   fi
 
+  echo $file
+
+  # Match and replace namespace declarations (including nested, like audio_plugin::dsp)
+  if grep -q "namespace ${OLD_NAMESPACE_NAME}" "$file"; then
+    modified=true
+    $DRY_RUN && echo "[Would update namespace declaration] $file"
+    ! $DRY_RUN && sed -i'' -E "s/\bnamespace ${OLD_NAMESPACE_NAME}(\b|::)/namespace ${NEW_NAMESPACE_NAME}\1/g" "$file"
+  fi
+
+  # Match and replace closing namespace comments
+  if grep -q "// namespace ${OLD_NAMESPACE_NAME}" "$file"; then
+    modified=true
+    $DRY_RUN && echo "[Would update namespace comment] $file"
+    ! $DRY_RUN && sed -i'' -E "s|(// namespace )${OLD_NAMESPACE_NAME}(\b|::)|\1${NEW_NAMESPACE_NAME}\2|g" "$file"
+  fi
+
   $modified && ! $DRY_RUN && echo "Modified: $file"
 }
 
@@ -83,6 +101,11 @@ done
 
 # Update include paths in source files
 find plugin/source test/source -name '*.cpp' -o -name '*.h' | while read -r file; do
+  replace_in_file "$file"
+done
+
+# Update include paths in header files
+find plugin/include test/source -name '*.cpp' -o -name '*.h' | while read -r file; do
   replace_in_file "$file"
 done
 

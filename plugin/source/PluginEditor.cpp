@@ -1,7 +1,7 @@
 #include "WaveshaperPlugin/PluginEditor.h"
 #include "WaveshaperPlugin/PluginProcessor.h"
 
-namespace audio_plugin {
+namespace waveshaper_plugin {
 AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     AudioPluginAudioProcessor& p)
     : AudioProcessorEditor(&p), processorRef(p)
@@ -91,4 +91,4 @@ void AudioPluginAudioProcessorEditor::buttonClicked(juce::Button* button)
 }
 
 
-}  // namespace audio_plugin
+}  // namespace waveshaper_plugin
